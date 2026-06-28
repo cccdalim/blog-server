@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: ljl-blog-server
+  config:
+    import: optional:application-local.yml
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 20MB
+
+server:
+  port: 8080
+  tomcat:
+    uri-encoding: UTF-8
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+  type-aliases-package: com.ljlblogserver.entity
+
+app:
+  jwt:
+    secret: ljl-blog-change-this-secret-in-production-min-32-chars
+    expiration-ms: 28800000
+  admin:
+    username: admin
+    password: admin123
+  storage:
+    root: ./data
+    content-dir: content/blog
+    upload-dir: uploads/images
+    public-url-prefix: /uploads
+
+# 数据库连接请写在 application-local.yml（见 application-local.yml.example）
+# 生产环境 Nginx 可直接托管 ./data/uploads 目录，见 docs/nginx-uploads.conf

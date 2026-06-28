@@ -1,0 +1,183 @@
+@use 'variables' as *;
+
+// ============================================
+// 无障碍 — 减少动画偏好
+// ============================================
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .reveal,
+  .reveal-scale {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+// ============================================
+// Hover 交互
+// ============================================
+.hover-lift {
+  transition:
+    transform var(--transition-base),
+    box-shadow var(--transition-base);
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+  }
+}
+
+.scale-hover {
+  transition: transform var(--transition-base);
+
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+// 按钮按压
+.press-scale {
+  transition: transform var(--transition-fast);
+
+  &:active {
+    transform: scale(0.96);
+  }
+}
+
+// ============================================
+// Vue Transition — 淡入淡出
+// ============================================
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity var(--transition-base);
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+// ============================================
+// Vue Transition — 上下滑入（移动端菜单等）
+// ============================================
+.slide-up-enter-active,
+.slide-up-leave-active {
+  transition:
+    opacity var(--transition-base),
+    transform var(--transition-base);
+}
+
+.slide-up-enter-from,
+.slide-up-leave-to {
+  opacity: 0;
+  transform: translateY(-12px);
+}
+
+// ============================================
+// Vue Transition — 页面切换（保留样式供局部使用，MainLayout 已不再使用 opacity 过渡）
+// ============================================
+.page-enter-active {
+  transition: transform 0.3s ease;
+}
+
+.page-leave-active {
+  transition: transform 0.2s ease;
+}
+
+.page-enter-from {
+  transform: translateY(8px);
+}
+
+.page-leave-to {
+  transform: translateY(-4px);
+}
+
+// ============================================
+// Scroll Reveal — 滚动进入视口
+// ============================================
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+
+  &.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.96);
+  transition:
+    opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+
+  &.is-visible {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// 首屏 Hero — 无需滚动即显示
+.reveal-hero {
+  animation: hero-enter 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes hero-enter {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// 交错延迟
+@for $i from 1 through 12 {
+  .reveal-delay-#{$i} {
+    transition-delay: #{$i * 0.08}s;
+  }
+}
+
+// ============================================
+// 图片缩放
+// ============================================
+.img-zoom {
+  overflow: hidden;
+
+  img {
+    transition: transform var(--transition-slow);
+  }
+
+  &:hover img {
+    transform: scale(1.06);
+  }
+}
+
+// ============================================
+// 像素分割线
+// ============================================
+.pixel-divider {
+  height: 2px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--pixel-divider) 0,
+    var(--pixel-divider) 8px,
+    transparent 8px,
+    transparent 16px
+  );
+  margin-block: $spacing-2xl;
+}

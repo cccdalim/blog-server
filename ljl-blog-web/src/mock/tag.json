@@ -1,0 +1,12 @@
+{
+  "list": [
+    { "id": "tag1", "name": "Vue 3", "slug": "vue3", "count": 12 },
+    { "id": "tag2", "name": "TypeScript", "slug": "typescript", "count": 10 },
+    { "id": "tag3", "name": "Spring Boot", "slug": "spring-boot", "count": 8 },
+    { "id": "tag4", "name": "性能优化", "slug": "performance", "count": 5 },
+    { "id": "tag5", "name": "Docker", "slug": "docker", "count": 4 },
+    { "id": "tag6", "name": "MySQL", "slug": "mysql", "count": 6 },
+    { "id": "tag7", "name": "CSS", "slug": "css", "count": 3 },
+    { "id": "tag8", "name": "Redis", "slug": "redis", "count": 4 }
+  ]
+}

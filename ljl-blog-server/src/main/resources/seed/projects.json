@@ -1,0 +1,97 @@
+{
+  "list": [
+    {
+      "id": "p1",
+      "name": "LJL Knowledge Hub",
+      "description": "Minecraft 风格的个人知识库网站，集学习笔记、博客、项目展示、旅行相册于一体。采用 Vue 3 + TypeScript 企业级架构，支持 Mock 数据与 Spring Boot 后端对接。",
+      "summary": "Vue 3 + TypeScript 企业级前端项目",
+      "techStack": ["Vue 3", "TypeScript", "Vite", "Pinia", "SCSS"],
+      "cover": "https://picsum.photos/seed/knowledgehub/640/400",
+      "gitUrl": "https://github.com",
+      "demoUrl": "https://example.com",
+      "featured": true,
+      "startDate": "2025-06-01",
+      "endDate": null,
+      "devProcess": ["需求分析", "架构设计", "UI 设计", "组件开发", "Mock 数据", "页面开发", "部署优化"],
+      "screenshots": [
+        "https://picsum.photos/seed/khub1/800/500",
+        "https://picsum.photos/seed/khub2/800/500",
+        "https://picsum.photos/seed/khub3/800/500"
+      ],
+      "timeline": [
+        { "date": "2025-06-01", "title": "项目启动", "description": "确定技术栈与 Minecraft 风格 UI 方向" },
+        { "date": "2025-06-10", "title": "架构搭建", "description": "完成目录结构、路由、Pinia、Mock API 层" },
+        { "date": "2025-06-20", "title": "首页 & 文档", "description": "完成首页、学习文档、Blog 模块" },
+        { "date": "2025-06-26", "title": "持续迭代", "description": "项目中心、相册、关于页开发中" }
+      ]
+    },
+    {
+      "id": "p2",
+      "name": "TaskFlow",
+      "description": "轻量级团队协作任务管理工具，支持看板视图、标签分类与进度追踪。后端采用 Spring Boot + MySQL + Redis 实现。",
+      "summary": "团队协作任务管理平台",
+      "techStack": ["Vue 3", "Spring Boot", "MySQL", "Redis"],
+      "cover": "https://picsum.photos/seed/taskflow/640/400",
+      "gitUrl": "https://github.com",
+      "featured": true,
+      "startDate": "2025-03-15",
+      "endDate": "2025-05-30",
+      "devProcess": ["需求调研", "数据库设计", "API 开发", "前端看板", "联调测试", "上线部署"],
+      "screenshots": [
+        "https://picsum.photos/seed/task1/800/500",
+        "https://picsum.photos/seed/task2/800/500"
+      ],
+      "timeline": [
+        { "date": "2025-03-15", "title": "立项", "description": "确定看板 + 标签的核心功能" },
+        { "date": "2025-04-01", "title": "后端 API", "description": "完成 RESTful API 与 Redis 缓存" },
+        { "date": "2025-05-01", "title": "前端看板", "description": "拖拽看板、任务卡片交互完成" },
+        { "date": "2025-05-30", "title": "v1.0 发布", "description": "首个可用版本上线" }
+      ]
+    },
+    {
+      "id": "p3",
+      "name": "PixelWeather",
+      "description": "像素风格天气应用，支持多城市切换、7 天预报与精美 Canvas 动画效果。",
+      "summary": "像素风天气小程序",
+      "techStack": ["Vue 3", "OpenWeather API", "Canvas"],
+      "cover": "https://picsum.photos/seed/weather/640/400",
+      "gitUrl": "https://github.com",
+      "demoUrl": "https://example.com",
+      "featured": true,
+      "startDate": "2025-01-10",
+      "endDate": "2025-02-28",
+      "devProcess": ["UI 设计", "API 对接", "Canvas 动画", "城市搜索", "响应式适配"],
+      "screenshots": [
+        "https://picsum.photos/seed/weather1/800/500",
+        "https://picsum.photos/seed/weather2/800/500"
+      ],
+      "timeline": [
+        { "date": "2025-01-10", "title": "原型设计", "description": "像素风 UI 原型与配色方案" },
+        { "date": "2025-01-25", "title": "核心功能", "description": "天气 API 对接与城市切换" },
+        { "date": "2025-02-28", "title": "发布", "description": "动画优化后正式发布" }
+      ]
+    },
+    {
+      "id": "p4",
+      "name": "Markdown Editor Pro",
+      "description": "在线 Markdown 编辑器，支持实时预览、代码高亮、导出 PDF 与主题切换。",
+      "summary": "在线 Markdown 编辑器",
+      "techStack": ["Vue 3", "markdown-it", "Element Plus"],
+      "cover": "https://picsum.photos/seed/markdown/640/400",
+      "gitUrl": "https://github.com",
+      "featured": false,
+      "startDate": "2024-11-01",
+      "endDate": "2024-12-20",
+      "devProcess": ["编辑器核心", "实时预览", "代码高亮", "PDF 导出", "主题系统"],
+      "screenshots": [
+        "https://picsum.photos/seed/md1/800/500"
+      ],
+      "timeline": [
+        { "date": "2024-11-01", "title": "启动", "description": "确定 markdown-it + Vue 3 方案" },
+        { "date": "2024-12-01", "title": "功能完善", "description": "PDF 导出与暗色主题" },
+        { "date": "2024-12-20", "title": "完成", "description": "v1.0 功能全部完成" }
+      ]
+    }
+  ],
+  "total": 4
+}

@@ -1,0 +1,14 @@
+{
+  "skills": [
+    { "name": "Vue 3", "level": "expert", "category": "frontend" },
+    { "name": "TypeScript", "level": "advanced", "category": "frontend" },
+    { "name": "Spring Boot", "level": "advanced", "category": "backend" },
+    { "name": "Node.js", "level": "intermediate", "category": "backend" },
+    { "name": "MySQL", "level": "advanced", "category": "database" },
+    { "name": "Redis", "level": "intermediate", "category": "database" },
+    { "name": "Docker", "level": "intermediate", "category": "devops" },
+    { "name": "Git", "level": "advanced", "category": "tools" },
+    { "name": "SCSS", "level": "advanced", "category": "frontend" },
+    { "name": "Vite", "level": "advanced", "category": "tools" }
+  ]
+}

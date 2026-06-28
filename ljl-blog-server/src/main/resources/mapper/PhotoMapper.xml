@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ljlblogserver.mapper.PhotoMapper">
+
+    <resultMap id="PhotoMap" type="com.ljlblogserver.entity.Photo">
+        <id property="id" column="id"/>
+        <result property="filePath" column="file_path"/>
+        <result property="title" column="title"/>
+        <result property="city" column="city"/>
+        <result property="country" column="country"/>
+        <result property="category" column="category"/>
+        <result property="photoDate" column="photo_date"/>
+        <result property="width" column="width"/>
+        <result property="height" column="height"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <sql id="PhotoFilter">
+        <where>
+            <if test="category != null and category != ''">
+                AND category = #{category}
+            </if>
+            <if test="country != null and country != ''">
+                AND country = #{country}
+            </if>
+            <if test="city != null and city != ''">
+                AND city = #{city}
+            </if>
+        </where>
+    </sql>
+
+    <select id="findPage" resultMap="PhotoMap">
+        SELECT * FROM photos
+        <include refid="PhotoFilter"/>
+        ORDER BY photo_date DESC, id DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="count" resultType="long">
+        SELECT COUNT(*) FROM photos
+        <include refid="PhotoFilter"/>
+    </select>
+
+    <select id="findRecent" resultMap="PhotoMap">
+        SELECT * FROM photos
+        ORDER BY photo_date DESC, id DESC
+        LIMIT #{limit}
+    </select>
+
+    <select id="findAll" resultMap="PhotoMap">
+        SELECT * FROM photos
+        <include refid="PhotoFilter"/>
+        ORDER BY photo_date DESC, id DESC
+    </select>
+
+    <select id="findById" resultMap="PhotoMap">
+        SELECT * FROM photos WHERE id = #{id}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO photos (file_path, title, city, country, category, photo_date, width, height)
+        VALUES (#{filePath}, #{title}, #{city}, #{country}, #{category}, #{photoDate}, #{width}, #{height})
+    </insert>
+
+    <update id="update">
+        UPDATE photos
+        SET file_path = #{filePath},
+            title = #{title},
+            city = #{city},
+            country = #{country},
+            category = #{category},
+            photo_date = #{photoDate},
+            width = #{width},
+            height = #{height}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM photos WHERE id = #{id}
+    </delete>
+</mapper>

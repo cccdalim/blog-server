@@ -1,0 +1,73 @@
+{
+  "profile": {
+    "name": "LJL",
+    "avatar": "https://api.dicebear.com/7.x/pixel-art/svg?seed=LJL",
+    "title": "Full Stack Developer",
+    "bio": "热爱编程与探索，用代码构建知识的方块世界。专注于 Vue 3 前端生态与 Spring Boot 后端开发，相信持续学习是最好的投资。",
+    "tagline": "Building knowledge, one block at a time."
+  },
+  "social": {
+    "github": "https://github.com",
+    "email": "hello@ljl.dev",
+    "twitter": "https://twitter.com"
+  },
+  "timeline": [
+    {
+      "date": "2025-06-01",
+      "title": "LJL Knowledge Hub 启动",
+      "description": "开始构建个人知识库网站，采用 Vue 3 + TypeScript 企业级架构"
+    },
+    {
+      "date": "2024-09-01",
+      "title": "全栈开发转型",
+      "description": "系统学习 Spring Boot，完成多个前后端分离项目"
+    },
+    {
+      "date": "2023-03-01",
+      "title": "深入 Vue 3 生态",
+      "description": "从 Vue 2 迁移到 Vue 3，掌握 Composition API 与 Pinia"
+    },
+    {
+      "date": "2021-07-01",
+      "title": "前端开发入门",
+      "description": "开始学习 HTML/CSS/JavaScript，完成第一个个人网站"
+    }
+  ],
+  "learningPath": [
+    {
+      "id": "lp1",
+      "title": "前端基础",
+      "description": "HTML / CSS / JavaScript 核心语法与 DOM 操作",
+      "status": "completed",
+      "skills": ["HTML", "CSS", "JavaScript"]
+    },
+    {
+      "id": "lp2",
+      "title": "Vue 3 生态",
+      "description": "Composition API、Pinia、Vue Router、Vite 工程化",
+      "status": "completed",
+      "skills": ["Vue 3", "TypeScript", "Pinia", "Vite"]
+    },
+    {
+      "id": "lp3",
+      "title": "后端开发",
+      "description": "Spring Boot RESTful API、JPA、Spring Security",
+      "status": "in-progress",
+      "skills": ["Spring Boot", "Java", "MySQL"]
+    },
+    {
+      "id": "lp4",
+      "title": "DevOps & 部署",
+      "description": "Docker 容器化、Nginx 反代、CI/CD 自动化部署",
+      "status": "planned",
+      "skills": ["Docker", "Nginx", "GitHub Actions"]
+    },
+    {
+      "id": "lp5",
+      "title": "云原生 & 微服务",
+      "description": "Kubernetes、服务网格、分布式系统设计",
+      "status": "planned",
+      "skills": ["K8s", "Redis", "消息队列"]
+    }
+  ]
+}

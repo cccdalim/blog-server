@@ -1,0 +1,7 @@
+# 本地备份副本，勿入库
+ljl-blog-web - 副本/
+ljl-blog-server - 副本/
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,57 @@
+{
+  "list": [
+    {
+      "id": "d1",
+      "slug": "spring-boot-quickstart",
+      "title": "Spring Boot 快速入门",
+      "summary": "从零搭建 Spring Boot 项目，理解自动配置、Starter 依赖与 RESTful API 设计。",
+      "cover": "https://picsum.photos/seed/springboot/640/360",
+      "category": "后端开发",
+      "categorySlug": "backend",
+      "tags": ["Spring Boot", "Java", "REST API"],
+      "publishDate": "2025-12-20",
+      "readTime": 20,
+      "featured": true
+    },
+    {
+      "id": "d2",
+      "slug": "mysql-index-optimization",
+      "title": "MySQL 索引优化实战",
+      "summary": "B+ 树原理、慢查询分析、索引失效场景——数据库性能优化核心知识。",
+      "cover": "https://picsum.photos/seed/mysql/640/360",
+      "category": "数据库",
+      "categorySlug": "database",
+      "tags": ["MySQL", "索引", "性能优化"],
+      "publishDate": "2025-12-08",
+      "readTime": 18,
+      "featured": true
+    },
+    {
+      "id": "d3",
+      "slug": "docker-container-basics",
+      "title": "Docker 容器化基础",
+      "summary": "镜像、容器、Dockerfile 编写与 docker-compose 多服务编排入门。",
+      "cover": "https://picsum.photos/seed/docker/640/360",
+      "category": "DevOps",
+      "categorySlug": "devops",
+      "tags": ["Docker", "容器化", "部署"],
+      "publishDate": "2025-11-25",
+      "readTime": 14,
+      "featured": false
+    },
+    {
+      "id": "d4",
+      "slug": "redis-cache-strategy",
+      "title": "Redis 缓存策略与实战",
+      "summary": "缓存穿透、击穿、雪崩的解决方案，以及 Redis 在 Spring Boot 中的集成。",
+      "cover": "https://picsum.photos/seed/redis/640/360",
+      "category": "数据库",
+      "categorySlug": "database",
+      "tags": ["Redis", "缓存", "Spring Boot"],
+      "publishDate": "2025-11-18",
+      "readTime": 16,
+      "featured": false
+    }
+  ],
+  "total": 4
+}

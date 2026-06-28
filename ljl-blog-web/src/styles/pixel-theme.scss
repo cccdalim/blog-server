@@ -1,0 +1,146 @@
+// ==========================================================================
+// Pixel Theme — Minecraft 风格像素元素配色
+// 修改本文件顶部的颜色值即可全局更换像素主题，无需改动组件代码
+// ==========================================================================
+
+// --- 草方块 (Grass) ---
+$pixel-grass: #3c8527;
+$pixel-grass-light: #4ea832;
+$pixel-grass-dark: #2d6319;
+
+// $pixel-grass: #2563eb;
+// $pixel-grass-light: #3b82f6;
+// $pixel-grass-dark: #1d4ed8;
+
+// --- 木方块 (Wood) ---
+$pixel-wood: #6b4f2a;
+$pixel-wood-dark: #523a1f;
+$pixel-wood-text: #c4a882;
+
+// --- 石头方块 (Stone) ---
+$pixel-stone: #7a7a7a;
+$pixel-stone-dark: #5e5e5e;
+
+// --- 圆石 / 拉杆 (Cobble & Lever) ---
+$pixel-cobble: #7a7a7a;
+$pixel-cobble-light: #959595;
+$pixel-cobble-dark: #555555;
+$pixel-lever-stick: #9a7b4f;
+$pixel-lever-stick-dark: #6b4f2a;
+$pixel-lever-stick-light: #c4a882;
+$pixel-redstone: #ab0707;
+$pixel-redstone-glow: #ff4444;
+
+// --- 像素边框 ---
+$pixel-border: #7a7a7a;
+$pixel-border-light-theme: #6b4f2a;
+
+// --- 藤蔓 (Vine) — MC 丛林绿 ---
+$pixel-vine: #3d6023;
+$pixel-vine-dark: #2a4518;
+$pixel-vine-leaf: #507832;
+$pixel-vine-leaf-light: #6a9c40;
+
+// --- 落叶 (Falling Leaves) ---
+$pixel-leaf-orange: #c45a2a;
+$pixel-leaf-orange-light: #e07040;
+$pixel-leaf-orange-dark: #9a4520;
+$pixel-leaf-yellow: #d4a017;
+$pixel-leaf-yellow-light: #e8b830;
+$pixel-leaf-yellow-dark: #a67c12;
+$pixel-leaf-brown: #8b5a2b;
+$pixel-leaf-brown-light: #a06838;
+$pixel-leaf-brown-dark: #6b4220;
+
+// --- 语义色（引用上方方块色，一般无需修改）---
+$pixel-accent: $pixel-grass-light;
+$pixel-accent-strong: $pixel-grass;
+$pixel-logo: $pixel-grass;
+$pixel-link: $pixel-grass-light;
+$pixel-link-hover: $pixel-grass;
+$pixel-divider: $pixel-grass;
+
+// --- 半透明背景（Tag、导航激活态等）---
+$pixel-grass-bg: rgba($pixel-grass, 0.15);
+$pixel-grass-bg-subtle: rgba($pixel-grass, 0.08);
+$pixel-grass-bg-hover: rgba($pixel-grass, 0.1);
+$pixel-grass-border-alpha: rgba($pixel-grass, 0.3);
+$pixel-wood-bg: rgba($pixel-wood, 0.15);
+$pixel-wood-border-alpha: rgba($pixel-wood, 0.3);
+$pixel-stone-bg: rgba($pixel-stone, 0.15);
+$pixel-stone-border-alpha: rgba($pixel-stone, 0.3);
+$pixel-selection-bg: rgba($pixel-grass, 0.3);
+
+// 导出 CSS 变量到 :root
+@mixin pixel-theme-root {
+  // 方块主色
+  --pixel-grass: #{$pixel-grass};
+  --pixel-grass-light: #{$pixel-grass-light};
+  --pixel-grass-dark: #{$pixel-grass-dark};
+  --pixel-wood: #{$pixel-wood};
+  --pixel-wood-dark: #{$pixel-wood-dark};
+  --pixel-wood-text: #{$pixel-wood-text};
+  --pixel-stone: #{$pixel-stone};
+  --pixel-stone-dark: #{$pixel-stone-dark};
+
+  // 圆石 / 拉杆
+  --pixel-cobble: #{$pixel-cobble};
+  --pixel-cobble-light: #{$pixel-cobble-light};
+  --pixel-cobble-dark: #{$pixel-cobble-dark};
+  --pixel-lever-stick: #{$pixel-lever-stick};
+  --pixel-lever-stick-dark: #{$pixel-lever-stick-dark};
+  --pixel-lever-stick-light: #{$pixel-lever-stick-light};
+  --pixel-redstone: #{$pixel-redstone};
+  --pixel-redstone-glow: #{$pixel-redstone-glow};
+
+  // 藤蔓
+  --pixel-vine: #{$pixel-vine};
+  --pixel-vine-dark: #{$pixel-vine-dark};
+  --pixel-vine-leaf: #{$pixel-vine-leaf};
+  --pixel-vine-leaf-light: #{$pixel-vine-leaf-light};
+
+  // 落叶
+  --pixel-leaf-orange: #{$pixel-leaf-orange};
+  --pixel-leaf-orange-light: #{$pixel-leaf-orange-light};
+  --pixel-leaf-orange-dark: #{$pixel-leaf-orange-dark};
+  --pixel-leaf-yellow: #{$pixel-leaf-yellow};
+  --pixel-leaf-yellow-light: #{$pixel-leaf-yellow-light};
+  --pixel-leaf-yellow-dark: #{$pixel-leaf-yellow-dark};
+  --pixel-leaf-brown: #{$pixel-leaf-brown};
+  --pixel-leaf-brown-light: #{$pixel-leaf-brown-light};
+  --pixel-leaf-brown-dark: #{$pixel-leaf-brown-dark};
+
+  // 边框
+  --pixel-border: #{$pixel-border};
+
+  // 语义
+  --pixel-accent: #{$pixel-accent};
+  --pixel-accent-strong: #{$pixel-accent-strong};
+  --pixel-logo: #{$pixel-logo};
+  --pixel-link: #{$pixel-link};
+  --pixel-link-hover: #{$pixel-link-hover};
+  --pixel-divider: #{$pixel-divider};
+
+  // 半透明
+  --pixel-grass-bg: #{$pixel-grass-bg};
+  --pixel-grass-bg-subtle: #{$pixel-grass-bg-subtle};
+  --pixel-grass-bg-hover: #{$pixel-grass-bg-hover};
+  --pixel-grass-border-alpha: #{$pixel-grass-border-alpha};
+  --pixel-wood-bg: #{$pixel-wood-bg};
+  --pixel-wood-border-alpha: #{$pixel-wood-border-alpha};
+  --pixel-stone-bg: #{$pixel-stone-bg};
+  --pixel-stone-border-alpha: #{$pixel-stone-border-alpha};
+  --pixel-selection-bg: #{$pixel-selection-bg};
+
+  // 兼容别名 → 逐步统一为 --pixel-*
+  --color-grass: var(--pixel-grass);
+  --color-grass-light: var(--pixel-grass-light);
+  --color-wood: var(--pixel-wood);
+  --color-stone: var(--pixel-stone);
+  --color-border-pixel: var(--pixel-border);
+}
+
+@mixin pixel-theme-light {
+  --pixel-border: #{$pixel-border-light-theme};
+  --color-border-pixel: var(--pixel-border);
+}

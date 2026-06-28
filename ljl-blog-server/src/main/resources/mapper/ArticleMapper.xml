@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ljlblogserver.mapper.ArticleMapper">
+
+    <resultMap id="ArticleMap" type="com.ljlblogserver.entity.Article">
+        <id property="id" column="id"/>
+        <result property="articleType" column="article_type"/>
+        <result property="slug" column="slug"/>
+        <result property="title" column="title"/>
+        <result property="summary" column="summary"/>
+        <result property="coverPath" column="cover_path"/>
+        <result property="contentPath" column="content_path"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="categoryName" column="category_name"/>
+        <result property="categorySlug" column="category_slug"/>
+        <result property="publishDate" column="publish_date"/>
+        <result property="readTime" column="read_time"/>
+        <result property="featured" column="featured"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <sql id="ArticleSelect">
+        SELECT a.id, a.article_type, a.slug, a.title, a.summary, a.cover_path, a.content_path,
+               a.category_id, c.name AS category_name, c.slug AS category_slug,
+               a.publish_date, a.read_time, a.featured, a.created_at, a.updated_at
+        FROM articles a
+        LEFT JOIN categories c ON c.id = a.category_id
+    </sql>
+
+    <sql id="ArticleFilter">
+        <where>
+            AND a.article_type = #{articleType}
+            <if test="categorySlug != null and categorySlug != ''">
+                AND c.slug = #{categorySlug}
+            </if>
+            <if test="tag != null and tag != ''">
+                AND EXISTS (
+                    SELECT 1 FROM article_tags at
+                    JOIN tags t ON t.id = at.tag_id
+                    WHERE at.article_id = a.id
+                      AND (LOWER(t.slug) = LOWER(#{tag}) OR LOWER(t.name) = LOWER(#{tag}))
+                )
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND (
+                    LOWER(a.title) LIKE CONCAT('%', LOWER(#{keyword}), '%')
+                    OR LOWER(a.summary) LIKE CONCAT('%', LOWER(#{keyword}), '%')
+                    OR EXISTS (
+                        SELECT 1 FROM article_tags at2
+                        JOIN tags t2 ON t2.id = at2.tag_id
+                        WHERE at2.article_id = a.id
+                          AND LOWER(t2.name) LIKE CONCAT('%', LOWER(#{keyword}), '%')
+                    )
+                )
+            </if>
+        </where>
+    </sql>
+
+    <select id="findBySlug" resultMap="ArticleMap">
+        <include refid="ArticleSelect"/>
+        WHERE a.slug = #{slug} AND a.article_type = #{articleType}
+    </select>
+
+    <select id="findPage" resultMap="ArticleMap">
+        <include refid="ArticleSelect"/>
+        <include refid="ArticleFilter"/>
+        ORDER BY a.publish_date DESC, a.id DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="count" resultType="long">
+        SELECT COUNT(*)
+        FROM articles a
+        LEFT JOIN categories c ON c.id = a.category_id
+        <include refid="ArticleFilter"/>
+    </select>
+
+    <select id="findLatest" resultMap="ArticleMap">
+        <include refid="ArticleSelect"/>
+        WHERE a.article_type = #{articleType}
+        ORDER BY a.publish_date DESC, a.id DESC
+        LIMIT #{limit}
+    </select>
+
+    <select id="findAllSorted" resultMap="ArticleMap">
+        <include refid="ArticleSelect"/>
+        WHERE a.article_type = #{articleType}
+        ORDER BY a.publish_date DESC, a.id DESC
+    </select>
+
+    <select id="findAllForAssetScan" resultMap="ArticleMap">
+        <include refid="ArticleSelect"/>
+        ORDER BY a.publish_date DESC, a.id DESC
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO articles (article_type, slug, title, summary, cover_path, content_path, category_id,
+                              publish_date, read_time, featured)
+        VALUES (#{articleType}, #{slug}, #{title}, #{summary}, #{coverPath}, #{contentPath}, #{categoryId},
+                #{publishDate}, #{readTime}, #{featured})
+    </insert>
+
+    <update id="update">
+        UPDATE articles
+        SET title = #{title},
+            summary = #{summary},
+            cover_path = #{coverPath},
+            content_path = #{contentPath},
+            category_id = #{categoryId},
+            publish_date = #{publishDate},
+            read_time = #{readTime},
+            featured = #{featured}
+        WHERE slug = #{slug} AND article_type = #{articleType}
+    </update>
+
+    <delete id="deleteBySlug">
+        DELETE FROM articles WHERE slug = #{slug} AND article_type = #{articleType}
+    </delete>
+
+    <delete id="deleteTagsByArticleId">
+        DELETE FROM article_tags WHERE article_id = #{articleId}
+    </delete>
+
+    <insert id="insertArticleTag">
+        INSERT INTO article_tags (article_id, tag_id) VALUES (#{articleId}, #{tagId})
+    </insert>
+
+    <select id="findTagsByArticleId" resultType="string">
+        SELECT t.name
+        FROM tags t
+        JOIN article_tags at ON at.tag_id = t.id
+        WHERE at.article_id = #{articleId}
+        ORDER BY t.name
+    </select>
+</mapper>

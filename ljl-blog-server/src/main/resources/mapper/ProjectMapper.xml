@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ljlblogserver.mapper.ProjectMapper">
+
+    <resultMap id="ProjectMap" type="com.ljlblogserver.entity.Project">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="description" column="description"/>
+        <result property="summary" column="summary"/>
+        <result property="cover" column="cover"/>
+        <result property="gitUrl" column="git_url"/>
+        <result property="demoUrl" column="demo_url"/>
+        <result property="featured" column="featured"/>
+        <result property="startDate" column="start_date"/>
+        <result property="endDate" column="end_date"/>
+        <result property="techStackJson" column="tech_stack"/>
+        <result property="devProcessJson" column="dev_process"/>
+        <result property="screenshotsJson" column="screenshots"/>
+        <result property="timelineJson" column="timeline"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <sql id="ProjectFilter">
+        <where>
+            <if test="featured != null and featured">
+                AND featured = 1
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND (
+                    LOWER(name) LIKE CONCAT('%', LOWER(#{keyword}), '%')
+                    OR LOWER(summary) LIKE CONCAT('%', LOWER(#{keyword}), '%')
+                    OR LOWER(description) LIKE CONCAT('%', LOWER(#{keyword}), '%')
+                )
+            </if>
+        </where>
+    </sql>
+
+    <select id="findPage" resultMap="ProjectMap">
+        SELECT * FROM projects
+        <include refid="ProjectFilter"/>
+        ORDER BY start_date DESC, id DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="count" resultType="long">
+        SELECT COUNT(*) FROM projects
+        <include refid="ProjectFilter"/>
+    </select>
+
+    <select id="findFeatured" resultMap="ProjectMap">
+        SELECT * FROM projects
+        WHERE featured = 1
+        ORDER BY start_date DESC, id DESC
+        LIMIT #{limit}
+    </select>
+
+    <select id="findAllSorted" resultMap="ProjectMap">
+        SELECT * FROM projects
+        ORDER BY start_date DESC, id DESC
+    </select>
+
+    <select id="findById" resultMap="ProjectMap">
+        SELECT * FROM projects WHERE id = #{id}
+    </select>
+
+    <select id="countAll" resultType="long">
+        SELECT COUNT(*) FROM projects
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO projects (name, description, summary, cover, git_url, demo_url, featured,
+                              start_date, end_date, tech_stack, dev_process, screenshots, timeline)
+        VALUES (#{name}, #{description}, #{summary}, #{cover}, #{gitUrl}, #{demoUrl}, #{featured},
+                #{startDate}, #{endDate}, #{techStackJson}, #{devProcessJson}, #{screenshotsJson}, #{timelineJson})
+    </insert>
+
+    <update id="update">
+        UPDATE projects
+        SET name = #{name},
+            description = #{description},
+            summary = #{summary},
+            cover = #{cover},
+            git_url = #{gitUrl},
+            demo_url = #{demoUrl},
+            featured = #{featured},
+            start_date = #{startDate},
+            end_date = #{endDate},
+            tech_stack = #{techStackJson},
+            dev_process = #{devProcessJson},
+            screenshots = #{screenshotsJson},
+            timeline = #{timelineJson}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM projects WHERE id = #{id}
+    </delete>
+
+    <delete id="deleteAll">
+        DELETE FROM projects
+    </delete>
+</mapper>

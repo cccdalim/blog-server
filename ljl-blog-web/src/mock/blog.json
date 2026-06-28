@@ -1,0 +1,70 @@
+{
+  "list": [
+    {
+      "id": "1",
+      "slug": "vue3-composition-api-guide",
+      "title": "Vue 3 Composition API 完全指南",
+      "summary": "深入理解 Composition API 的设计思想，掌握 script setup、ref、reactive 等核心概念。",
+      "cover": "https://picsum.photos/seed/vue3/640/360",
+      "category": "前端框架",
+      "categorySlug": "frontend-framework",
+      "tags": ["Vue 3", "Composition API", "TypeScript"],
+      "publishDate": "2025-12-15",
+      "readTime": 12,
+      "featured": true
+    },
+    {
+      "id": "2",
+      "slug": "typescript-advanced-types",
+      "title": "TypeScript 高级类型实战",
+      "summary": "从泛型约束到条件类型，系统梳理 TS 类型体操在企业项目中的应用场景。",
+      "cover": "https://picsum.photos/seed/typescript/640/360",
+      "category": "编程语言",
+      "categorySlug": "programming-language",
+      "tags": ["TypeScript", "类型系统"],
+      "publishDate": "2025-11-28",
+      "readTime": 15,
+      "featured": true
+    },
+    {
+      "id": "3",
+      "slug": "pinia-state-management",
+      "title": "Pinia 状态管理最佳实践",
+      "summary": "对比 Vuex，探索 Pinia 在大型 Vue 3 项目中的模块化设计与持久化方案。",
+      "cover": "https://picsum.photos/seed/pinia/640/360",
+      "category": "前端框架",
+      "categorySlug": "frontend-framework",
+      "tags": ["Pinia", "Vue 3", "状态管理"],
+      "publishDate": "2025-11-10",
+      "readTime": 8,
+      "featured": false
+    },
+    {
+      "id": "4",
+      "slug": "vite-build-optimization",
+      "title": "Vite 构建优化与部署策略",
+      "summary": "代码分割、预加载、CDN 部署——让 Vue 3 项目在生产环境飞起来。",
+      "cover": "https://picsum.photos/seed/vite/640/360",
+      "category": "工程化",
+      "categorySlug": "engineering",
+      "tags": ["Vite", "性能优化", "部署"],
+      "publishDate": "2025-10-22",
+      "readTime": 10,
+      "featured": false
+    },
+    {
+      "id": "5",
+      "slug": "css-grid-layout-mastery",
+      "title": "CSS Grid 布局精通指南",
+      "summary": "用 Grid 构建复杂响应式布局，配合现代 CSS 特性实现 Minecraft 风格 UI。",
+      "cover": "https://picsum.photos/seed/cssgrid/640/360",
+      "category": "CSS",
+      "categorySlug": "css",
+      "tags": ["CSS", "Grid", "响应式"],
+      "publishDate": "2025-10-05",
+      "readTime": 9,
+      "featured": false
+    }
+  ],
+  "total": 5
+}
