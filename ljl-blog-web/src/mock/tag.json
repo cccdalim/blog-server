@@ -1,12 +1,17 @@
 {
   "list": [
-    { "id": "tag1", "name": "Vue 3", "slug": "vue3", "count": 12 },
-    { "id": "tag2", "name": "TypeScript", "slug": "typescript", "count": 10 },
-    { "id": "tag3", "name": "Spring Boot", "slug": "spring-boot", "count": 8 },
-    { "id": "tag4", "name": "性能优化", "slug": "performance", "count": 5 },
-    { "id": "tag5", "name": "Docker", "slug": "docker", "count": 4 },
-    { "id": "tag6", "name": "MySQL", "slug": "mysql", "count": 6 },
-    { "id": "tag7", "name": "CSS", "slug": "css", "count": 3 },
-    { "id": "tag8", "name": "Redis", "slug": "redis", "count": 4 }
+    { "id": "tag1", "name": "Vue 3", "slug": "vue3", "scope": "content", "count": 12 },
+    { "id": "tag2", "name": "TypeScript", "slug": "typescript", "scope": "content", "count": 10 },
+    { "id": "tag3", "name": "Spring Boot", "slug": "spring-boot", "scope": "content", "count": 8 },
+    { "id": "tag4", "name": "性能优化", "slug": "performance", "scope": "content", "count": 5 },
+    { "id": "tag5", "name": "Docker", "slug": "docker", "scope": "content", "count": 4 },
+    { "id": "tag6", "name": "MySQL", "slug": "mysql", "scope": "content", "count": 6 },
+    { "id": "tag7", "name": "CSS", "slug": "css", "scope": "content", "count": 3 },
+    { "id": "tag8", "name": "Redis", "slug": "redis", "scope": "content", "count": 4 },
+    { "id": "rtag1", "name": "猪肉", "slug": "猪肉", "scope": "recipe", "count": 1 },
+    { "id": "rtag2", "name": "下饭菜", "slug": "下饭菜", "scope": "recipe", "count": 2 },
+    { "id": "rtag3", "name": "川菜", "slug": "川菜", "scope": "recipe", "count": 1 },
+    { "id": "rtag4", "name": "快手", "slug": "快手", "scope": "recipe", "count": 1 },
+    { "id": "rtag5", "name": "烘焙", "slug": "烘焙", "scope": "recipe", "count": 1 }
   ]
 }

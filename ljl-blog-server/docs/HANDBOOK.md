@@ -147,7 +147,7 @@ cp .env.example .env.development.local
 推荐 `.env.development.local`：
 
 ```env
-VITE_USE_MOCK=false
+VITE_USE_MOCK=false··
 VITE_API_BASE_URL=/api
 VITE_API_PROXY_TARGET=http://localhost:8080
 ```

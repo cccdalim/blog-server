@@ -3,16 +3,16 @@ import { computed, nextTick, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import {
-  createDoc,
-  fetchDocBySlug,
-  updateDoc,
-} from '@/api/modules/docs'
+  createRecipe,
+  fetchRecipeBySlug,
+  updateRecipe,
+} from '@/api/modules/recipe'
 import { fetchCategories } from '@/api/modules/meta'
 import { uploadImage } from '@/api/modules/upload'
 import MarkdownViewer from '@/components/markdown/MarkdownViewer.vue'
 import TagSelect from '@/components/admin/TagSelect.vue'
 import type { ArticleSavePayload, CategoryItem } from '@/types'
-import { MARKDOWN_DOC_TEMPLATE, normalizeMarkdown } from '@/utils/normalizeMarkdown'
+import { MARKDOWN_RECIPE_TEMPLATE, normalizeMarkdown } from '@/utils/normalizeMarkdown'
 
 const route = useRoute()
 const router = useRouter()
@@ -34,42 +34,42 @@ const form = ref<ArticleSavePayload>({
   categorySlug: '',
   tags: [],
   publishDate: new Date().toISOString().slice(0, 10),
-  readTime: 8,
+  readTime: 30,
   featured: false,
 })
 
 const selectedTags = ref<string[]>([])
 
 async function loadCategories() {
-  const res = await fetchCategories('content')
+  const res = await fetchCategories('recipe')
   if (res.code === 0) {
     categories.value = res.data
-    const firstCategory = res.data[0]
+    const firstCategory = categories.value[0]
     if (!form.value.categorySlug && firstCategory) {
       form.value.categorySlug = firstCategory.slug
     }
   }
 }
 
-async function loadDoc() {
+async function loadRecipe() {
   if (!isEdit.value) return
   const slug = String(route.params.slug)
-  const res = await fetchDocBySlug(slug)
+  const res = await fetchRecipeBySlug(slug)
   if (res.code === 0 && res.data) {
-    const doc = res.data
+    const recipe = res.data
     form.value = {
-      slug: doc.slug,
-      title: doc.title,
-      summary: doc.summary,
-      content: doc.content ?? '',
-      cover: doc.cover ?? '',
-      categorySlug: doc.categorySlug,
-      tags: doc.tags,
-      publishDate: doc.publishDate,
-      readTime: doc.readTime,
-      featured: doc.featured,
+      slug: recipe.slug,
+      title: recipe.title,
+      summary: recipe.summary,
+      content: recipe.content ?? '',
+      cover: recipe.cover ?? '',
+      categorySlug: recipe.categorySlug,
+      tags: recipe.tags,
+      publishDate: recipe.publishDate,
+      readTime: recipe.readTime,
+      featured: recipe.featured,
     }
-    selectedTags.value = [...doc.tags]
+    selectedTags.value = [...recipe.tags]
   }
 }
 
@@ -89,7 +89,7 @@ function autoSlug() {
 
 function insertTemplate() {
   if (form.value.content.trim() && !window.confirm('将覆盖当前正文，是否继续？')) return
-  form.value.content = MARKDOWN_DOC_TEMPLATE
+  form.value.content = MARKDOWN_RECIPE_TEMPLATE
 }
 
 function formatContent() {
@@ -160,7 +160,7 @@ async function onSubmit() {
   form.value.content = normalizeMarkdown(form.value.content)
 
   if (!form.value.title.trim() || !form.value.slug.trim()) {
-    ElMessage.error('标题和 Slug 不能为空')
+    ElMessage.error('菜名和 Slug 不能为空')
     return
   }
   if (!form.value.summary.trim()) {
@@ -179,12 +179,12 @@ async function onSubmit() {
   saving.value = true
   try {
     const res = isEdit.value
-      ? await updateDoc(String(route.params.slug), form.value)
-      : await createDoc(form.value)
+      ? await updateRecipe(String(route.params.slug), form.value)
+      : await createRecipe(form.value)
 
     if (res.code === 0) {
       ElMessage.success(isEdit.value ? '保存成功' : '创建成功')
-      await router.push('/admin/docs')
+      await router.push('/admin/recipes')
     } else {
       ElMessage.error(res.message || '保存失败')
     }
@@ -197,9 +197,9 @@ async function onSubmit() {
 
 onMounted(async () => {
   await loadCategories()
-  await loadDoc()
+  await loadRecipe()
   if (!isEdit.value && !form.value.content.trim()) {
-    form.value.content = MARKDOWN_DOC_TEMPLATE
+    form.value.content = MARKDOWN_RECIPE_TEMPLATE
   }
 })
 </script>
@@ -207,13 +207,13 @@ onMounted(async () => {
 <template>
   <div class="admin-page">
     <header class="admin-page__header">
-      <h1>{{ isEdit ? '编辑文档' : '新建文档' }}</h1>
-      <button type="button" @click="router.push('/admin/docs')">返回列表</button>
+      <h1>{{ isEdit ? '编辑菜谱' : '新建菜谱' }}</h1>
+      <button type="button" @click="router.push('/admin/recipes')">返回列表</button>
     </header>
 
     <form class="admin-form" novalidate @submit.prevent="onSubmit">
       <label>
-        标题
+        菜名
         <input v-model="form.title" required @blur="autoSlug" />
       </label>
 
@@ -238,7 +238,7 @@ onMounted(async () => {
 
       <label>
         标签
-        <TagSelect v-model="selectedTags" />
+        <TagSelect v-model="selectedTags" scope="recipe" />
       </label>
 
       <div class="admin-form__row">
@@ -247,7 +247,7 @@ onMounted(async () => {
           <input v-model="form.publishDate" type="date" required />
         </label>
         <label>
-          阅读时长（分钟）
+          烹饪时长（分钟）
           <input v-model.number="form.readTime" type="number" min="1" />
         </label>
         <label class="admin-form__checkbox">
@@ -257,11 +257,11 @@ onMounted(async () => {
       </div>
 
       <label>
-        封面（可选）
+        成品图（可选）
         <div class="admin-form__cover">
           <input v-model="form.cover" placeholder="/uploads/images/..." />
           <label class="admin-form__upload">
-            {{ uploading ? '上传中...' : '上传封面' }}
+            {{ uploading ? '上传中...' : '上传图片' }}
             <input type="file" accept="image/*" hidden @change="onUploadCover" />
           </label>
         </div>
@@ -284,7 +284,7 @@ onMounted(async () => {
           </div>
         </div>
         <p class="admin-form__editor-hint">
-          学习文档建议使用「概述 → 前置知识 → 正文 → 小结」结构，用 <code>##</code> / <code>###</code> 划分章节。
+          建议使用「菜品简介 → 食材清单 → 制作步骤 → 小贴士」结构，步骤用 <code>###</code> 编号。
         </p>
         <div class="admin-form__editor-panels" :class="{ 'admin-form__editor-panels--preview': showPreview }">
           <textarea
@@ -293,7 +293,7 @@ onMounted(async () => {
             class="admin-form__editor-input"
             rows="20"
             required
-            placeholder="在此输入 Markdown 正文..."
+            placeholder="在此输入食材与制作流程..."
           />
           <div v-if="showPreview" class="admin-form__editor-preview">
             <MarkdownViewer :content="form.content" />

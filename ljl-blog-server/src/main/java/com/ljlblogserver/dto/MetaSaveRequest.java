@@ -11,4 +11,7 @@ public class MetaSaveRequest {
 
     @NotBlank(message = "slug 不能为空")
     private String slug;
+
+    /** content（Blog/Docs）或 recipe（菜谱），默认 content */
+    private String scope;
 }

@@ -7,6 +7,7 @@ public class DashboardStatsDto {
 
     private long blogCount;
     private long docCount;
+    private long recipeCount;
     private long projectCount;
     private long photoCount;
     private long categoryCount;

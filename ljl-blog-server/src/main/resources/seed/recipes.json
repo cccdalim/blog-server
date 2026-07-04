@@ -1,0 +1,37 @@
+{
+  "list": [
+    {
+      "slug": "hongshao-rou",
+      "title": "经典红烧肉",
+      "summary": "肥而不腻、入口即化的家常硬菜，适合周末宴客或犒劳自己。",
+      "cover": "",
+      "categorySlug": "home-cooking",
+      "publishDate": "2026-03-15",
+      "readTime": 90,
+      "featured": true,
+      "tags": ["猪肉", "下饭菜", "经典"]
+    },
+    {
+      "slug": "mapo-tofu",
+      "title": "麻婆豆腐",
+      "summary": "麻辣鲜香、豆腐嫩滑，十分钟就能上桌的川菜代表。",
+      "cover": "",
+      "categorySlug": "sichuan",
+      "publishDate": "2026-03-10",
+      "readTime": 20,
+      "featured": true,
+      "tags": ["豆腐", "川菜", "快手"]
+    },
+    {
+      "slug": "qifeng-dangao",
+      "title": "基础戚风蛋糕",
+      "summary": "松软细腻的基础戚风，掌握打发技巧后可以做各种口味变化。",
+      "cover": "",
+      "categorySlug": "baking",
+      "publishDate": "2026-03-05",
+      "readTime": 60,
+      "featured": false,
+      "tags": ["蛋糕", "烘焙", "甜点"]
+    }
+  ]
+}

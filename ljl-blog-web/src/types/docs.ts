@@ -3,14 +3,19 @@ export interface CategoryItem {
   id: string
   name: string
   slug: string
+  scope?: TagScope
   count: number
 }
+
+/** 标签分组：content = Blog/Docs，recipe = 菜谱 */
+export type TagScope = 'content' | 'recipe'
 
 /** 标签 */
 export interface TagItem {
   id: string
   name: string
   slug: string
+  scope?: TagScope
   count: number
 }
 

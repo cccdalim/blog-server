@@ -1,23 +1,22 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import {
-  fetchBlogBySlug,
-  fetchBlogList,
-  fetchBlogNav,
-  fetchLatestBlogs,
-} from '@/api/modules/blog'
+  fetchLatestRecipes,
+  fetchRecipeBySlug,
+  fetchRecipeList,
+  fetchRecipeNav,
+} from '@/api/modules/recipe'
 import { fetchCategories, fetchTags } from '@/api/modules/meta'
 import type { Article, CategoryItem, DocNav, TagItem } from '@/types'
 
-export const useBlogStore = defineStore('blog', () => {
-  const latestArticles = ref<Article[]>([])
-  const articleList = ref<Article[]>([])
-  const currentArticle = ref<Article | null>(null)
-  const articleNav = ref<DocNav>({ prev: null, next: null })
+export const useRecipeStore = defineStore('recipe', () => {
+  const latestRecipes = ref<Article[]>([])
+  const recipeList = ref<Article[]>([])
+  const currentRecipe = ref<Article | null>(null)
+  const recipeNav = ref<DocNav>({ prev: null, next: null })
   const categories = ref<CategoryItem[]>([])
   const tags = ref<TagItem[]>([])
   const loading = ref(false)
-  const listLoading = ref(false)
   const detailLoading = ref(false)
 
   const total = ref(0)
@@ -30,14 +29,12 @@ export const useBlogStore = defineStore('blog', () => {
 
   const totalPages = computed(() => Math.ceil(total.value / pageSize.value))
 
-  let detailRequestId = 0
-
   async function loadLatest(limit = 3) {
     loading.value = true
     try {
-      const res = await fetchLatestBlogs(limit)
+      const res = await fetchLatestRecipes(limit)
       if (res.code === 0) {
-        latestArticles.value = res.data
+        latestRecipes.value = res.data
       }
     } finally {
       loading.value = false
@@ -45,10 +42,10 @@ export const useBlogStore = defineStore('blog', () => {
   }
 
   async function loadList(page = 1) {
-    listLoading.value = true
+    loading.value = true
     currentPage.value = page
     try {
-      const res = await fetchBlogList({
+      const res = await fetchRecipeList({
         page,
         pageSize: pageSize.value,
         category: activeCategory.value || undefined,
@@ -56,40 +53,41 @@ export const useBlogStore = defineStore('blog', () => {
         keyword: keyword.value || undefined,
       })
       if (res.code === 0) {
-        articleList.value = res.data.list
+        recipeList.value = res.data.list
         total.value = res.data.total
       }
     } finally {
-      listLoading.value = false
+      loading.value = false
     }
   }
 
   async function loadDetail(slug: string) {
-    const requestId = ++detailRequestId
     detailLoading.value = true
-    currentArticle.value = null
-    articleNav.value = { prev: null, next: null }
+    currentRecipe.value = null
+    recipeNav.value = { prev: null, next: null }
     try {
-      const [articleRes, navRes] = await Promise.all([
-        fetchBlogBySlug(slug),
-        fetchBlogNav(slug),
+      const [recipeRes, navRes] = await Promise.all([
+        fetchRecipeBySlug(slug),
+        fetchRecipeNav(slug),
       ])
-      if (requestId !== detailRequestId) return
-      if (articleRes.code === 0) {
-        currentArticle.value = articleRes.data
+      if (recipeRes.code === 0) {
+        currentRecipe.value = recipeRes.data
       }
       if (navRes.code === 0) {
-        articleNav.value = navRes.data
+        recipeNav.value = navRes.data
       }
     } finally {
-      if (requestId === detailRequestId) {
-        detailLoading.value = false
-      }
+      detailLoading.value = false
     }
   }
 
+  function clearDetail() {
+    currentRecipe.value = null
+    recipeNav.value = { prev: null, next: null }
+  }
+
   async function loadMeta() {
-    const [catRes, tagRes] = await Promise.all([fetchCategories('content'), fetchTags('content')])
+    const [catRes, tagRes] = await Promise.all([fetchCategories('recipe'), fetchTags('recipe')])
     if (catRes.code === 0) categories.value = catRes.data
     if (tagRes.code === 0) tags.value = tagRes.data
   }
@@ -116,20 +114,14 @@ export const useBlogStore = defineStore('blog', () => {
     loadList(1)
   }
 
-  function clearDetail() {
-    currentArticle.value = null
-    articleNav.value = { prev: null, next: null }
-  }
-
   return {
-    latestArticles,
-    articleList,
-    currentArticle,
-    articleNav,
+    latestRecipes,
+    recipeList,
+    currentRecipe,
+    recipeNav,
     categories,
     tags,
     loading,
-    listLoading,
     detailLoading,
     total,
     currentPage,
@@ -142,10 +134,10 @@ export const useBlogStore = defineStore('blog', () => {
     loadList,
     loadDetail,
     loadMeta,
+    clearDetail,
     setCategory,
     setTag,
     setKeyword,
     resetFilters,
-    clearDetail,
   }
 })

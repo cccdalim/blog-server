@@ -19,6 +19,7 @@ function logout() {
         <RouterLink to="/admin/dashboard" class="admin-layout__link">控制台</RouterLink>
         <RouterLink to="/admin/blog" class="admin-layout__link">文章管理</RouterLink>
         <RouterLink to="/admin/docs" class="admin-layout__link">文档管理</RouterLink>
+        <RouterLink to="/admin/recipes" class="admin-layout__link">菜谱管理</RouterLink>
         <RouterLink to="/admin/projects" class="admin-layout__link">项目管理</RouterLink>
         <RouterLink to="/admin/about" class="admin-layout__link">关于页管理</RouterLink>
         <RouterLink to="/admin/meta" class="admin-layout__link">分类 / 标签</RouterLink>

@@ -30,10 +30,11 @@ public class DashboardService {
         DashboardStatsDto stats = new DashboardStatsDto();
         stats.setBlogCount(articleMapper.count(ArticleType.BLOG.getValue(), null, null, null));
         stats.setDocCount(articleMapper.count(ArticleType.DOC.getValue(), null, null, null));
+        stats.setRecipeCount(articleMapper.count(ArticleType.RECIPE.getValue(), null, null, null));
         stats.setProjectCount(projectMapper.countAll());
         stats.setPhotoCount(photoMapper.count(null, null, null));
-        stats.setCategoryCount(categoryMapper.findAllWithCount().size());
-        stats.setTagCount(tagMapper.findAllWithCount().size());
+        stats.setCategoryCount(categoryMapper.countAll());
+        stats.setTagCount(tagMapper.countAll());
 
         Path uploadRoot = fileStorageService.getUploadRootPath();
         int fileCount = 0;

@@ -58,6 +58,10 @@ onMounted(loadStats)
           <span class="admin-stat-card__label">文档</span>
           <strong class="admin-stat-card__value">{{ stats.docCount }}</strong>
         </RouterLink>
+        <RouterLink to="/admin/recipes" class="admin-stat-card">
+          <span class="admin-stat-card__label">菜谱</span>
+          <strong class="admin-stat-card__value">{{ stats.recipeCount }}</strong>
+        </RouterLink>
         <RouterLink to="/admin/projects" class="admin-stat-card">
           <span class="admin-stat-card__label">项目</span>
           <strong class="admin-stat-card__value">{{ stats.projectCount }}</strong>
@@ -103,6 +107,7 @@ onMounted(loadStats)
         <div class="admin-quick-links">
           <RouterLink to="/admin/blog/new">新建文章</RouterLink>
           <RouterLink to="/admin/docs/new">新建文档</RouterLink>
+          <RouterLink to="/admin/recipes/new">新建菜谱</RouterLink>
           <RouterLink to="/admin/projects/new">新建项目</RouterLink>
           <RouterLink to="/admin/album">管理相册</RouterLink>
         </div>

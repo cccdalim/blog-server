@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -27,13 +29,15 @@ public class MetaController {
     private final MetaService metaService;
 
     @GetMapping("/categories")
-    public ApiResponse<List<CategoryDto>> categories() {
-        return ApiResponse.success(metaService.categories());
+    public ApiResponse<List<CategoryDto>> categories(
+            @RequestParam(defaultValue = "content") String scope) {
+        return ApiResponse.success(metaService.categories(scope));
     }
 
     @GetMapping("/tags")
-    public ApiResponse<List<TagDto>> tags() {
-        return ApiResponse.success(metaService.tags());
+    public ApiResponse<List<TagDto>> tags(
+            @RequestParam(defaultValue = "content") String scope) {
+        return ApiResponse.success(metaService.tags(scope));
     }
 
     @PostMapping("/categories")

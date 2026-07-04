@@ -6,7 +6,8 @@ import lombok.Getter;
 public enum ArticleType {
 
     BLOG("blog", "content/blog"),
-    DOC("doc", "content/docs");
+    DOC("doc", "content/docs"),
+    RECIPE("recipe", "content/recipes");
 
     private final String value;
     private final String contentDir;
@@ -14,5 +15,21 @@ public enum ArticleType {
     ArticleType(String value, String contentDir) {
         this.value = value;
         this.contentDir = contentDir;
+    }
+
+    public static ArticleType fromValue(String value) {
+        if (value == null) {
+            return BLOG;
+        }
+        for (ArticleType type : values()) {
+            if (type.value.equals(value)) {
+                return type;
+            }
+        }
+        return BLOG;
+    }
+
+    public String canonicalContentPath(String slug) {
+        return contentDir + "/" + slug + ".md";
     }
 }

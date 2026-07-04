@@ -8,5 +8,6 @@ public class Tag {
     private Long id;
     private String name;
     private String slug;
+    private String scope;
     private Integer count;
 }

@@ -7,6 +7,7 @@ import AlbumSection from './components/AlbumSection.vue'
 import BlogSection from './components/BlogSection.vue'
 import DocsSection from './components/DocsSection.vue'
 import ProjectSection from './components/ProjectSection.vue'
+import RecipeSection from './components/RecipeSection.vue'
 
 const settingStore = useSettingStore()
 const { about, skills } = storeToRefs(settingStore)
@@ -24,6 +25,7 @@ onMounted(async () => {
 
     <BlogSection />
     <DocsSection />
+    <RecipeSection />
     <ProjectSection />
     <AlbumSection />
   </div>

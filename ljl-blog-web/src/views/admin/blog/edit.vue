@@ -41,7 +41,7 @@ const form = ref<ArticleSavePayload>({
 const selectedTags = ref<string[]>([])
 
 async function loadCategories() {
-  const res = await fetchCategories()
+  const res = await fetchCategories('content')
   if (res.code === 0) {
     categories.value = res.data
     const firstCategory = res.data[0]

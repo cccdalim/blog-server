@@ -12,20 +12,24 @@ import {
   updateCategory,
   updateTag,
 } from '@/api/modules/meta'
-import type { CategoryItem, MetaSavePayload, TagItem } from '@/types'
+import type { CategoryItem, MetaSavePayload, TagItem, TagScope } from '@/types'
 
-type TabKey = 'categories' | 'tags'
+type TabKey = 'content-categories' | 'recipe-categories' | 'content-tags' | 'recipe-tags'
 
-const activeTab = ref<TabKey>('categories')
+const activeTab = ref<TabKey>('content-categories')
 const loading = ref(false)
 const saving = ref(false)
 const cleaning = ref(false)
 
-const categories = ref<CategoryItem[]>([])
-const tags = ref<TagItem[]>([])
+const contentCategories = ref<CategoryItem[]>([])
+const recipeCategories = ref<CategoryItem[]>([])
+const contentTags = ref<TagItem[]>([])
+const recipeTags = ref<TagItem[]>([])
 
 const editingCategoryId = ref<string | null>(null)
 const editingTagId = ref<string | null>(null)
+const editingCategoryScope = ref<TagScope>('content')
+const editingTagScope = ref<TagScope>('content')
 
 const emptyForm = (): MetaSavePayload => ({ name: '', slug: '' })
 const categoryForm = ref<MetaSavePayload>(emptyForm())
@@ -33,6 +37,18 @@ const tagForm = ref<MetaSavePayload>(emptyForm())
 
 const isEditingCategory = computed(() => Boolean(editingCategoryId.value))
 const isEditingTag = computed(() => Boolean(editingTagId.value))
+const activeCategoryScope = computed<TagScope>(() =>
+  activeTab.value === 'recipe-categories' ? 'recipe' : 'content',
+)
+const activeTagScope = computed<TagScope>(() =>
+  activeTab.value === 'recipe-tags' ? 'recipe' : 'content',
+)
+const activeCategories = computed(() =>
+  activeCategoryScope.value === 'recipe' ? recipeCategories.value : contentCategories.value,
+)
+const activeTags = computed(() =>
+  activeTagScope.value === 'recipe' ? recipeTags.value : contentTags.value,
+)
 
 function slugify(text: string) {
   return text
@@ -54,24 +70,54 @@ function autoTagSlug() {
   }
 }
 
-async function loadCategories() {
-  const res = await fetchCategories()
+async function loadContentCategories() {
+  const res = await fetchCategories('content')
   if (res.code === 0) {
-    categories.value = res.data
+    contentCategories.value = res.data
   }
 }
 
-async function loadTags() {
-  const res = await fetchTags()
+async function loadRecipeCategories() {
+  const res = await fetchCategories('recipe')
   if (res.code === 0) {
-    tags.value = res.data
+    recipeCategories.value = res.data
+  }
+}
+
+async function loadCategoriesForScope(scope: TagScope) {
+  if (scope === 'recipe') {
+    await loadRecipeCategories()
+  } else {
+    await loadContentCategories()
+  }
+}
+
+async function loadContentTags() {
+  const res = await fetchTags('content')
+  if (res.code === 0) {
+    contentTags.value = res.data
+  }
+}
+
+async function loadRecipeTags() {
+  const res = await fetchTags('recipe')
+  if (res.code === 0) {
+    recipeTags.value = res.data
+  }
+}
+
+async function loadTagsForScope(scope: TagScope) {
+  if (scope === 'recipe') {
+    await loadRecipeTags()
+  } else {
+    await loadContentTags()
   }
 }
 
 async function loadAll() {
   loading.value = true
   try {
-    await Promise.all([loadCategories(), loadTags()])
+    await Promise.all([loadContentCategories(), loadRecipeCategories(), loadContentTags(), loadRecipeTags()])
   } finally {
     loading.value = false
   }
@@ -79,25 +125,49 @@ async function loadAll() {
 
 function resetCategoryForm() {
   editingCategoryId.value = null
-  categoryForm.value = emptyForm()
+  editingCategoryScope.value = activeCategoryScope.value
+  categoryForm.value = { ...emptyForm(), scope: activeCategoryScope.value }
+}
+
+function switchCategoryTab(tab: 'content-categories' | 'recipe-categories') {
+  if (activeTab.value === tab) return
+  activeTab.value = tab
+  if (isEditingCategory.value && editingCategoryScope.value !== activeCategoryScope.value) {
+    resetCategoryForm()
+  } else {
+    categoryForm.value.scope = activeCategoryScope.value
+  }
 }
 
 function resetTagForm() {
   editingTagId.value = null
-  tagForm.value = emptyForm()
+  editingTagScope.value = activeTagScope.value
+  tagForm.value = { ...emptyForm(), scope: activeTagScope.value }
+}
+
+function switchTagTab(tab: 'content-tags' | 'recipe-tags') {
+  if (activeTab.value === tab) return
+  activeTab.value = tab
+  if (isEditingTag.value && editingTagScope.value !== activeTagScope.value) {
+    resetTagForm()
+  } else {
+    tagForm.value.scope = activeTagScope.value
+  }
 }
 
 function startEditCategory(item: CategoryItem) {
   editingCategoryId.value = item.id
-  categoryForm.value = { name: item.name, slug: item.slug }
-  activeTab.value = 'categories'
+  editingCategoryScope.value = item.scope ?? 'content'
+  categoryForm.value = { name: item.name, slug: item.slug, scope: editingCategoryScope.value }
+  activeTab.value = editingCategoryScope.value === 'recipe' ? 'recipe-categories' : 'content-categories'
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
 function startEditTag(item: TagItem) {
   editingTagId.value = item.id
-  tagForm.value = { name: item.name, slug: item.slug }
-  activeTab.value = 'tags'
+  editingTagScope.value = item.scope ?? 'content'
+  tagForm.value = { name: item.name, slug: item.slug, scope: editingTagScope.value }
+  activeTab.value = editingTagScope.value === 'recipe' ? 'recipe-tags' : 'content-tags'
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
@@ -106,6 +176,7 @@ async function onSubmitCategory() {
     ElMessage.error('名称和 slug 不能为空')
     return
   }
+  categoryForm.value.scope = activeCategoryScope.value
   saving.value = true
   try {
     const res = isEditingCategory.value
@@ -114,7 +185,7 @@ async function onSubmitCategory() {
     if (res.code === 0) {
       ElMessage.success(isEditingCategory.value ? '更新成功' : '创建成功')
       resetCategoryForm()
-      await loadCategories()
+      await loadCategoriesForScope(activeCategoryScope.value)
     } else {
       ElMessage.error(res.message || '保存失败')
     }
@@ -130,6 +201,7 @@ async function onSubmitTag() {
     ElMessage.error('名称和 slug 不能为空')
     return
   }
+  tagForm.value.scope = activeTagScope.value
   saving.value = true
   try {
     const res = isEditingTag.value
@@ -138,7 +210,7 @@ async function onSubmitTag() {
     if (res.code === 0) {
       ElMessage.success(isEditingTag.value ? '更新成功' : '创建成功')
       resetTagForm()
-      await loadTags()
+      await loadTagsForScope(activeTagScope.value)
     } else {
       ElMessage.error(res.message || '保存失败')
     }
@@ -159,7 +231,7 @@ async function onDeleteCategory(item: CategoryItem) {
   if (res.code === 0) {
     ElMessage.success('删除成功')
     if (editingCategoryId.value === item.id) resetCategoryForm()
-    await loadCategories()
+    await loadCategoriesForScope(item.scope ?? 'content')
   } else {
     ElMessage.error(res.message || '删除失败')
   }
@@ -175,7 +247,7 @@ async function onDeleteTag(item: TagItem) {
   if (res.code === 0) {
     ElMessage.success('删除成功')
     if (editingTagId.value === item.id) resetTagForm()
-    await loadTags()
+    await loadTagsForScope(item.scope ?? 'content')
   } else {
     ElMessage.error(res.message || '删除失败')
   }
@@ -187,7 +259,7 @@ async function onCleanupOrphans() {
     const res = await cleanupOrphanTags()
     if (res.code === 0) {
       ElMessage.success(res.message || `已清理 ${res.data.count} 个未使用标签`)
-      await loadTags()
+      await Promise.all([loadContentTags(), loadRecipeTags()])
     } else {
       ElMessage.error(res.message || '清理失败')
     }
@@ -210,17 +282,31 @@ onMounted(loadAll)
     <div class="admin-tabs">
       <button
         type="button"
-        :class="{ 'admin-tabs__active': activeTab === 'categories' }"
-        @click="activeTab = 'categories'"
+        :class="{ 'admin-tabs__active': activeTab === 'content-categories' }"
+        @click="switchCategoryTab('content-categories')"
       >
-        分类（{{ categories.length }}）
+        内容分类（{{ contentCategories.length }}）
       </button>
       <button
         type="button"
-        :class="{ 'admin-tabs__active': activeTab === 'tags' }"
-        @click="activeTab = 'tags'"
+        :class="{ 'admin-tabs__active': activeTab === 'recipe-categories' }"
+        @click="switchCategoryTab('recipe-categories')"
       >
-        标签（{{ tags.length }}）
+        菜系分类（{{ recipeCategories.length }}）
+      </button>
+      <button
+        type="button"
+        :class="{ 'admin-tabs__active': activeTab === 'content-tags' }"
+        @click="switchTagTab('content-tags')"
+      >
+        内容标签（{{ contentTags.length }}）
+      </button>
+      <button
+        type="button"
+        :class="{ 'admin-tabs__active': activeTab === 'recipe-tags' }"
+        @click="switchTagTab('recipe-tags')"
+      >
+        菜谱标签（{{ recipeTags.length }}）
       </button>
     </div>
 
@@ -228,9 +314,11 @@ onMounted(loadAll)
 
     <template v-else>
       <!-- 分类 -->
-      <section v-show="activeTab === 'categories'" class="admin-section">
+      <section v-show="activeTab === 'content-categories' || activeTab === 'recipe-categories'" class="admin-section">
         <form class="admin-form" @submit.prevent="onSubmitCategory">
-          <h2>{{ isEditingCategory ? '编辑分类' : '新建分类' }}</h2>
+          <h2>
+            {{ isEditingCategory ? '编辑分类' : activeCategoryScope === 'recipe' ? '新建菜系分类' : '新建内容分类' }}
+          </h2>
           <div class="admin-form__row">
             <label>
               名称
@@ -259,10 +347,10 @@ onMounted(loadAll)
             </tr>
           </thead>
           <tbody>
-            <tr v-if="categories.length === 0">
+            <tr v-if="activeCategories.length === 0">
               <td colspan="4" class="admin-table__empty">暂无分类</td>
             </tr>
-            <tr v-for="item in categories" :key="item.id">
+            <tr v-for="item in activeCategories" :key="item.id">
               <td>{{ item.name }}</td>
               <td>{{ item.slug }}</td>
               <td>{{ item.count }}</td>
@@ -275,10 +363,12 @@ onMounted(loadAll)
         </table>
       </section>
 
-      <!-- 标签 -->
-      <section v-show="activeTab === 'tags'" class="admin-section">
+      <!-- 标签（Blog/Docs 或菜谱） -->
+      <section v-show="activeTab === 'content-tags' || activeTab === 'recipe-tags'" class="admin-section">
         <form class="admin-form" @submit.prevent="onSubmitTag">
-          <h2>{{ isEditingTag ? '编辑标签' : '新建标签' }}</h2>
+          <h2>
+            {{ isEditingTag ? '编辑标签' : activeTagScope === 'recipe' ? '新建菜谱标签' : '新建内容标签' }}
+          </h2>
           <div class="admin-form__row">
             <label>
               名称
@@ -310,10 +400,10 @@ onMounted(loadAll)
             </tr>
           </thead>
           <tbody>
-            <tr v-if="tags.length === 0">
+            <tr v-if="activeTags.length === 0">
               <td colspan="4" class="admin-table__empty">暂无标签</td>
             </tr>
-            <tr v-for="item in tags" :key="item.id">
+            <tr v-for="item in activeTags" :key="item.id">
               <td>{{ item.name }}</td>
               <td>{{ item.slug }}</td>
               <td>{{ item.count }}</td>

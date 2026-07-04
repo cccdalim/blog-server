@@ -1,10 +1,16 @@
 {
   "list": [
-    { "id": "c1", "name": "前端框架", "slug": "frontend-framework", "count": 8 },
-    { "id": "c2", "name": "后端开发", "slug": "backend", "count": 6 },
-    { "id": "c3", "name": "数据库", "slug": "database", "count": 5 },
-    { "id": "c4", "name": "DevOps", "slug": "devops", "count": 3 },
-    { "id": "c5", "name": "编程语言", "slug": "programming-language", "count": 4 },
-    { "id": "c6", "name": "工程化", "slug": "engineering", "count": 3 }
+    { "id": "c1", "name": "前端框架", "slug": "frontend-framework", "scope": "content", "count": 8 },
+    { "id": "c2", "name": "后端开发", "slug": "backend", "scope": "content", "count": 6 },
+    { "id": "c3", "name": "数据库", "slug": "database", "scope": "content", "count": 5 },
+    { "id": "c4", "name": "DevOps", "slug": "devops", "scope": "content", "count": 3 },
+    { "id": "c5", "name": "编程语言", "slug": "programming-language", "scope": "content", "count": 4 },
+    { "id": "c6", "name": "工程化", "slug": "engineering", "scope": "content", "count": 3 },
+    { "id": "rc1", "name": "家常菜", "slug": "home-cooking", "scope": "recipe", "count": 1 },
+    { "id": "rc2", "name": "川菜", "slug": "sichuan", "scope": "recipe", "count": 1 },
+    { "id": "rc3", "name": "粤菜", "slug": "cantonese", "scope": "recipe", "count": 0 },
+    { "id": "rc4", "name": "烘焙", "slug": "baking", "scope": "recipe", "count": 1 },
+    { "id": "rc5", "name": "汤粥", "slug": "soup-porridge", "scope": "recipe", "count": 0 },
+    { "id": "rc6", "name": "小吃", "slug": "snacks", "scope": "recipe", "count": 0 }
   ]
 }

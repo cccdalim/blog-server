@@ -1,3 +1,5 @@
+import type { TagScope } from './docs'
+
 export interface LoginResponse {
   token: string
   username: string
@@ -50,4 +52,5 @@ export interface ProjectSavePayload {
 export interface MetaSavePayload {
   name: string
   slug: string
+  scope?: TagScope
 }

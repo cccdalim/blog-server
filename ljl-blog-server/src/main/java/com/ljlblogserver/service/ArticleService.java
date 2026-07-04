@@ -1,6 +1,7 @@
 package com.ljlblogserver.service;
 
 import com.ljlblogserver.common.ArticleType;
+import com.ljlblogserver.common.TagScope;
 import com.ljlblogserver.common.BusinessException;
 import com.ljlblogserver.common.PageResult;
 import com.ljlblogserver.dto.ArticleDto;
@@ -80,11 +81,11 @@ public class ArticleService {
         if (articleMapper.findBySlug(request.getSlug(), type.getValue()) != null) {
             throw BusinessException.conflict("slug 已存在");
         }
-        Category category = requireCategory(request.getCategorySlug());
+        Category category = requireCategory(type, request.getCategorySlug());
         String contentPath = fileStorageService.saveMarkdown(type.getContentDir(), request.getSlug(), request.getContent());
         Article article = buildArticle(type, request, category, contentPath);
         articleMapper.insert(article);
-        saveTags(article.getId(), request.getTags());
+        saveTags(type, article.getId(), request.getTags());
         article.setTags(request.getTags() != null ? request.getTags() : List.of());
         return toDto(article, true);
     }
@@ -115,14 +116,14 @@ public class ArticleService {
         }
 
         String contentPath = fileStorageService.saveMarkdown(type.getContentDir(), request.getSlug(), request.getContent());
-        Category category = requireCategory(request.getCategorySlug());
+        Category category = requireCategory(type, request.getCategorySlug());
 
         if (!existing.getSlug().equals(request.getSlug())) {
             articleMapper.deleteTagsByArticleId(existing.getId());
             articleMapper.deleteBySlug(slug, type.getValue());
             Article article = buildArticle(type, request, category, contentPath);
             articleMapper.insert(article);
-            saveTags(article.getId(), request.getTags());
+            saveTags(type, article.getId(), request.getTags());
             cleanupOrphanTags();
             article.setTags(request.getTags() != null ? request.getTags() : List.of());
             return toDto(article, true);
@@ -145,7 +146,7 @@ public class ArticleService {
         }
 
         articleMapper.deleteTagsByArticleId(existing.getId());
-        saveTags(existing.getId(), request.getTags());
+        saveTags(type, existing.getId(), request.getTags());
         cleanupOrphanTags();
         existing.setTags(request.getTags() != null ? request.getTags() : List.of());
         return toDto(existing, true);
@@ -180,8 +181,9 @@ public class ArticleService {
         tagMapper.deleteOrphans();
     }
 
-    private Category requireCategory(String categorySlug) {
-        Category category = categoryMapper.findBySlug(categorySlug);
+    private Category requireCategory(ArticleType type, String categorySlug) {
+        String scope = TagScope.fromArticleType(type).getValue();
+        Category category = categoryMapper.findBySlugAndScope(categorySlug, scope);
         if (category == null) {
             throw BusinessException.badRequest("分类不存在: " + categorySlug);
         }
@@ -205,26 +207,28 @@ public class ArticleService {
         return article;
     }
 
-    private void saveTags(Long articleId, List<String> tags) {
+    private void saveTags(ArticleType type, Long articleId, List<String> tags) {
         if (tags == null || tags.isEmpty()) {
             return;
         }
+        String scope = TagScope.fromArticleType(type).getValue();
         for (String tagName : tags) {
             if (!StringUtils.hasText(tagName)) {
                 continue;
             }
             String slug = slugify(tagName);
-            Tag tag = tagMapper.findBySlug(slug);
+            Tag tag = tagMapper.findBySlugAndScope(slug, scope);
             if (tag == null) {
-                tag = tagMapper.findByName(tagName.trim());
+                tag = tagMapper.findByNameAndScope(tagName.trim(), scope);
             }
             if (tag == null) {
                 tag = new Tag();
                 tag.setName(tagName.trim());
                 tag.setSlug(StringUtils.hasText(slug) ? slug : tagName.trim());
+                tag.setScope(scope);
                 tagMapper.insert(tag);
                 if (tag.getId() == null) {
-                    tag = tagMapper.findBySlug(tag.getSlug());
+                    tag = tagMapper.findBySlugAndScope(tag.getSlug(), scope);
                 }
             }
             if (tag == null || tag.getId() == null) {
@@ -252,9 +256,38 @@ public class ArticleService {
         dto.setReadTime(article.getReadTime());
         dto.setFeatured(article.getFeatured());
         if (includeContent) {
-            dto.setContent(fileStorageService.readMarkdown(article.getContentPath()));
+            dto.setContent(readContentWithFallback(article));
         }
         return dto;
+    }
+
+    /**
+     * 读取 Markdown 正文。优先使用数据库 content_path；若为空则按 article_type + slug 回退，
+     * 兼容早期文档保存在 content/blog 下的历史数据。
+     */
+    private String readContentWithFallback(Article article) {
+        String primary = fileStorageService.readMarkdown(article.getContentPath());
+        if (StringUtils.hasText(primary)) {
+            return primary;
+        }
+
+        ArticleType type = ArticleType.fromValue(article.getArticleType());
+        String canonical = type.canonicalContentPath(article.getSlug());
+        if (!canonical.equals(article.getContentPath())) {
+            String fallback = fileStorageService.readMarkdown(canonical);
+            if (StringUtils.hasText(fallback)) {
+                return fallback;
+            }
+        }
+
+        if (type == ArticleType.DOC) {
+            String legacyBlog = ArticleType.BLOG.canonicalContentPath(article.getSlug());
+            if (!legacyBlog.equals(article.getContentPath()) && !legacyBlog.equals(canonical)) {
+                return fileStorageService.readMarkdown(legacyBlog);
+            }
+        }
+
+        return primary;
     }
 
     private String slugify(String input) {

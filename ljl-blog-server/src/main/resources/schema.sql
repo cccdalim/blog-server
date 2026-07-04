@@ -9,15 +9,19 @@ CREATE TABLE IF NOT EXISTS users (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS categories (
-    id   BIGINT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(100) NOT NULL,
-    slug VARCHAR(100) NOT NULL UNIQUE
+    id    BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name  VARCHAR(100) NOT NULL,
+    slug  VARCHAR(100) NOT NULL,
+    scope VARCHAR(20)  NOT NULL DEFAULT 'content',
+    UNIQUE KEY uk_category_scope_slug (scope, slug)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS tags (
-    id   BIGINT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(100) NOT NULL,
-    slug VARCHAR(100) NOT NULL UNIQUE
+    id    BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name  VARCHAR(100) NOT NULL,
+    slug  VARCHAR(100) NOT NULL,
+    scope VARCHAR(20)  NOT NULL DEFAULT 'content',
+    UNIQUE KEY uk_tag_scope_slug (scope, slug)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS articles (
@@ -85,11 +89,17 @@ CREATE TABLE IF NOT EXISTS projects (
 CREATE INDEX idx_projects_start_date ON projects (start_date DESC);
 CREATE INDEX idx_projects_featured ON projects (featured);
 
-INSERT INTO categories (name, slug) VALUES
-    ('前端框架', 'frontend-framework'),
-    ('后端开发', 'backend'),
-    ('数据库', 'database'),
-    ('DevOps', 'devops'),
-    ('编程语言', 'programming-language'),
-    ('工程化', 'engineering')
-ON DUPLICATE KEY UPDATE name = VALUES(name);
+INSERT INTO categories (name, slug, scope) VALUES
+    ('前端框架', 'frontend-framework', 'content'),
+    ('后端开发', 'backend', 'content'),
+    ('数据库', 'database', 'content'),
+    ('DevOps', 'devops', 'content'),
+    ('编程语言', 'programming-language', 'content'),
+    ('工程化', 'engineering', 'content'),
+    ('家常菜', 'home-cooking', 'recipe'),
+    ('川菜', 'sichuan', 'recipe'),
+    ('粤菜', 'cantonese', 'recipe'),
+    ('烘焙', 'baking', 'recipe'),
+    ('汤粥', 'soup-porridge', 'recipe'),
+    ('小吃', 'snacks', 'recipe')
+ON DUPLICATE KEY UPDATE name = VALUES(name), scope = VALUES(scope);

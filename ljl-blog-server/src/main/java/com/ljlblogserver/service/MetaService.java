@@ -1,6 +1,7 @@
 package com.ljlblogserver.service;
 
 import com.ljlblogserver.common.BusinessException;
+import com.ljlblogserver.common.TagScope;
 import com.ljlblogserver.dto.CategoryDto;
 import com.ljlblogserver.dto.MetaSaveRequest;
 import com.ljlblogserver.dto.TagDto;
@@ -23,27 +24,31 @@ public class MetaService {
     private final CategoryMapper categoryMapper;
     private final TagMapper tagMapper;
 
-    public List<CategoryDto> categories() {
-        return categoryMapper.findAllWithCount().stream()
+    public List<CategoryDto> categories(String scope) {
+        String categoryScope = resolveScope(scope).getValue();
+        return categoryMapper.findAllWithCountByScope(categoryScope).stream()
                 .map(this::toCategoryDto)
                 .toList();
     }
 
-    public List<TagDto> tags() {
-        return tagMapper.findAllWithCount().stream()
+    public List<TagDto> tags(String scope) {
+        String tagScope = resolveScope(scope).getValue();
+        return tagMapper.findAllWithCountByScope(tagScope).stream()
                 .map(this::toTagDto)
                 .toList();
     }
 
     @Transactional
     public CategoryDto createCategory(MetaSaveRequest request) {
+        TagScope categoryScope = resolveScope(request.getScope());
         String slug = normalizeSlug(request.getSlug(), request.getName());
-        if (categoryMapper.findBySlug(slug) != null) {
+        if (categoryMapper.findBySlugAndScope(slug, categoryScope.getValue()) != null) {
             throw BusinessException.conflict("分类 slug 已存在");
         }
         Category category = new Category();
         category.setName(request.getName().trim());
         category.setSlug(slug);
+        category.setScope(categoryScope.getValue());
         categoryMapper.insert(category);
         return toCategoryDto(category, 0);
     }
@@ -52,7 +57,7 @@ public class MetaService {
     public CategoryDto updateCategory(String id, MetaSaveRequest request) {
         Category existing = requireCategory(id);
         String slug = normalizeSlug(request.getSlug(), request.getName());
-        Category conflict = categoryMapper.findBySlugExclude(slug, existing.getId());
+        Category conflict = categoryMapper.findBySlugExclude(slug, existing.getScope(), existing.getId());
         if (conflict != null) {
             throw BusinessException.conflict("分类 slug 已存在");
         }
@@ -75,13 +80,15 @@ public class MetaService {
 
     @Transactional
     public TagDto createTag(MetaSaveRequest request) {
+        TagScope tagScope = resolveScope(request.getScope());
         String slug = normalizeSlug(request.getSlug(), request.getName());
-        if (tagMapper.findBySlug(slug) != null) {
+        if (tagMapper.findBySlugAndScope(slug, tagScope.getValue()) != null) {
             throw BusinessException.conflict("标签 slug 已存在");
         }
         Tag tag = new Tag();
         tag.setName(request.getName().trim());
         tag.setSlug(slug);
+        tag.setScope(tagScope.getValue());
         tagMapper.insert(tag);
         return toTagDto(tag, 0);
     }
@@ -90,7 +97,7 @@ public class MetaService {
     public TagDto updateTag(String id, MetaSaveRequest request) {
         Tag existing = requireTag(id);
         String slug = normalizeSlug(request.getSlug(), request.getName());
-        Tag conflict = tagMapper.findBySlugExclude(slug, existing.getId());
+        Tag conflict = tagMapper.findBySlugExclude(slug, existing.getScope(), existing.getId());
         if (conflict != null) {
             throw BusinessException.conflict("标签 slug 已存在");
         }
@@ -153,7 +160,12 @@ public class MetaService {
     }
 
     private CategoryDto toCategoryDto(Category category, int count) {
-        return new CategoryDto(String.valueOf(category.getId()), category.getName(), category.getSlug(), count);
+        return new CategoryDto(
+                String.valueOf(category.getId()),
+                category.getName(),
+                category.getSlug(),
+                category.getScope() != null ? category.getScope() : TagScope.CONTENT.getValue(),
+                count);
     }
 
     private TagDto toTagDto(Tag tag) {
@@ -161,7 +173,16 @@ public class MetaService {
     }
 
     private TagDto toTagDto(Tag tag, int count) {
-        return new TagDto(String.valueOf(tag.getId()), tag.getName(), tag.getSlug(), count);
+        return new TagDto(
+                String.valueOf(tag.getId()),
+                tag.getName(),
+                tag.getSlug(),
+                tag.getScope() != null ? tag.getScope() : TagScope.CONTENT.getValue(),
+                count);
+    }
+
+    private TagScope resolveScope(String scope) {
+        return TagScope.fromValue(scope);
     }
 
     private String normalizeSlug(String slug, String name) {

@@ -14,30 +14,31 @@ import java.util.List;
 @Mapper
 public interface TagMapper {
 
-    @Select("SELECT id, name, slug FROM tags WHERE id = #{id}")
+    @Select("SELECT id, name, slug, scope FROM tags WHERE id = #{id}")
     Tag findById(@Param("id") Long id);
 
-    @Select("SELECT id, name, slug FROM tags WHERE slug = #{slug}")
-    Tag findBySlug(@Param("slug") String slug);
+    @Select("SELECT id, name, slug, scope FROM tags WHERE slug = #{slug} AND scope = #{scope}")
+    Tag findBySlugAndScope(@Param("slug") String slug, @Param("scope") String scope);
 
-    @Select("SELECT id, name, slug FROM tags WHERE name = #{name}")
-    Tag findByName(@Param("name") String name);
+    @Select("SELECT id, name, slug, scope FROM tags WHERE name = #{name} AND scope = #{scope}")
+    Tag findByNameAndScope(@Param("name") String name, @Param("scope") String scope);
 
-    @Select("SELECT id, name, slug FROM tags WHERE slug = #{slug} AND id != #{excludeId}")
-    Tag findBySlugExclude(@Param("slug") String slug, @Param("excludeId") Long excludeId);
+    @Select("SELECT id, name, slug, scope FROM tags WHERE slug = #{slug} AND scope = #{scope} AND id != #{excludeId}")
+    Tag findBySlugExclude(@Param("slug") String slug, @Param("scope") String scope, @Param("excludeId") Long excludeId);
 
-    @Insert("INSERT INTO tags (name, slug) VALUES (#{name}, #{slug})")
+    @Insert("INSERT INTO tags (name, slug, scope) VALUES (#{name}, #{slug}, #{scope})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(Tag tag);
 
     @Select("""
-            SELECT t.id, t.name, t.slug, COUNT(at.article_id) AS count
+            SELECT t.id, t.name, t.slug, t.scope, COUNT(at.article_id) AS count
             FROM tags t
             LEFT JOIN article_tags at ON at.tag_id = t.id
-            GROUP BY t.id, t.name, t.slug
+            WHERE t.scope = #{scope}
+            GROUP BY t.id, t.name, t.slug, t.scope
             ORDER BY count DESC, t.name
             """)
-    List<Tag> findAllWithCount();
+    List<Tag> findAllWithCountByScope(@Param("scope") String scope);
 
     @Select("SELECT COUNT(*) FROM article_tags WHERE tag_id = #{tagId}")
     long countArticlesByTagId(@Param("tagId") Long tagId);
@@ -50,6 +51,9 @@ public interface TagMapper {
 
     @Delete("DELETE FROM tags WHERE id = #{id}")
     int deleteById(@Param("id") Long id);
+
+    @Select("SELECT COUNT(*) FROM tags")
+    long countAll();
 
     /** 删除没有任何文章引用的标签 */
     @Delete("""

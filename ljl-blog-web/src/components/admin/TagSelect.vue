@@ -2,8 +2,17 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { ElOption, ElSelect } from 'element-plus'
 import { fetchTags } from '@/api/modules/meta'
+import type { TagScope } from '@/types'
 
 const model = defineModel<string[]>({ default: () => [] })
+
+const props = withDefaults(
+  defineProps<{
+    /** content = Blog/Docs，recipe = 菜谱 */
+    scope?: TagScope
+  }>(),
+  { scope: 'content' },
+)
 
 const options = ref<string[]>([])
 const selected = ref<string[]>([...model.value])
@@ -31,12 +40,21 @@ const mergedOptions = computed(() => {
   return Array.from(set).sort((a, b) => a.localeCompare(b, 'zh-CN'))
 })
 
-onMounted(async () => {
-  const res = await fetchTags()
+async function loadOptions() {
+  const res = await fetchTags(props.scope)
   if (res.code === 0) {
     options.value = res.data.map((tag) => tag.name)
   }
-})
+}
+
+watch(
+  () => props.scope,
+  () => {
+    loadOptions()
+  },
+)
+
+onMounted(loadOptions)
 </script>
 
 <template>
@@ -49,7 +67,7 @@ onMounted(async () => {
     collapse-tags
     collapse-tags-tooltip
     :max-collapse-tags="4"
-    placeholder="选择已有标签或输入新标签"
+    :placeholder="scope === 'recipe' ? '选择或输入菜谱标签' : '选择已有标签或输入新标签'"
     class="tag-select"
   >
     <ElOption v-for="tag in mergedOptions" :key="tag" :label="tag" :value="tag" />

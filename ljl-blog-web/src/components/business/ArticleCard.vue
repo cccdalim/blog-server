@@ -12,12 +12,18 @@ interface Props {
 withDefaults(defineProps<Props>(), {
   linkPrefix: '/blog',
 })
+
+function resolveRouteName(prefix: string): string {
+  if (prefix === '/docs') return 'DocDetail'
+  if (prefix === '/recipes') return 'RecipeDetail'
+  return 'BlogDetail'
+}
 </script>
 
 <template>
   <RouterLink
     :to="{
-      name: linkPrefix === '/docs' ? 'DocDetail' : 'BlogDetail',
+      name: resolveRouteName(linkPrefix),
       params: { slug: article.slug },
     }"
     class="article-card"

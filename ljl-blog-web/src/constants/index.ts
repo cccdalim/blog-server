@@ -14,6 +14,7 @@ export const NAV_ITEMS: NavItem[] = [
   { label: '首页', path: '/' },
   { label: '学习文档', path: '/docs' },
   { label: 'Blog', path: '/blog' },
+  { label: '美食菜谱', path: '/recipes' },
   { label: '项目中心', path: '/projects' },
   { label: '旅行相册', path: '/album' },
   { label: '关于我', path: '/about' },
@@ -23,6 +24,7 @@ export const NAV_ITEMS: NavItem[] = [
 export const HOME_LIMITS = {
   blog: 3,
   docs: 3,
+  recipes: 3,
   projects: 3,
   photos: 4,
 } as const

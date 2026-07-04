@@ -79,7 +79,7 @@ export const useDocsStore = defineStore('docs', () => {
   }
 
   async function loadMeta() {
-    const [catRes, tagRes] = await Promise.all([fetchCategories(), fetchTags()])
+    const [catRes, tagRes] = await Promise.all([fetchCategories('content'), fetchTags('content')])
     if (catRes.code === 0) categories.value = catRes.data
     if (tagRes.code === 0) tags.value = tagRes.data
   }

@@ -10,5 +10,6 @@ public class TagDto {
     private String id;
     private String name;
     private String slug;
+    private String scope;
     private int count;
 }

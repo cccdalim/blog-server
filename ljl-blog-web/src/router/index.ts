@@ -49,6 +49,18 @@ const router = createRouter({
           meta: { title: '文章详情', layout: 'content' },
         },
         {
+          path: '/recipes',
+          name: 'RecipeList',
+          component: () => import('@/views/recipes/index.vue'),
+          meta: { title: '美食菜谱' },
+        },
+        {
+          path: '/recipes/:slug',
+          name: 'RecipeDetail',
+          component: () => import('@/views/recipes/detail.vue'),
+          meta: { title: '菜谱详情', layout: 'content' },
+        },
+        {
           path: '/projects',
           name: 'ProjectList',
           component: () => import('@/views/projects/index.vue'),
@@ -136,6 +148,24 @@ const router = createRouter({
           name: 'AdminDocsEdit',
           component: () => import('@/views/admin/docs/edit.vue'),
           meta: { title: '编辑文档', requiresAuth: true },
+        },
+        {
+          path: 'recipes',
+          name: 'AdminRecipesList',
+          component: () => import('@/views/admin/recipes/index.vue'),
+          meta: { title: '菜谱管理', requiresAuth: true },
+        },
+        {
+          path: 'recipes/new',
+          name: 'AdminRecipesCreate',
+          component: () => import('@/views/admin/recipes/edit.vue'),
+          meta: { title: '新建菜谱', requiresAuth: true },
+        },
+        {
+          path: 'recipes/:slug/edit',
+          name: 'AdminRecipesEdit',
+          component: () => import('@/views/admin/recipes/edit.vue'),
+          meta: { title: '编辑菜谱', requiresAuth: true },
         },
         {
           path: 'projects',

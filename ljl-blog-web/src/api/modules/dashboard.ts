@@ -4,6 +4,7 @@ import type { ApiResponse } from '@/types'
 export interface DashboardStats {
   blogCount: number
   docCount: number
+  recipeCount: number
   projectCount: number
   photoCount: number
   categoryCount: number

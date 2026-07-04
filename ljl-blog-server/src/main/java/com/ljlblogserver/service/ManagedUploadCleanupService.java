@@ -2,6 +2,7 @@ package com.ljlblogserver.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ljlblogserver.common.ArticleType;
 import com.ljlblogserver.config.StorageProperties;
 import com.ljlblogserver.dto.AboutDto.AboutPageDto;
 import com.ljlblogserver.dto.OrphanImageCleanupDto;
@@ -192,7 +193,7 @@ public class ManagedUploadCleanupService {
         for (Article article : articleMapper.findAllForAssetScan()) {
             addManagedPath(paths, fileStorageService.toPublicUrl(article.getCoverPath()));
             addManagedPath(paths, article.getCoverPath());
-            String markdown = safeReadMarkdown(article.getContentPath());
+            String markdown = safeReadMarkdown(article);
             extractUrls(markdown).forEach(url -> addManagedPath(paths, url));
         }
 
@@ -261,7 +262,7 @@ public class ManagedUploadCleanupService {
             if (pathMatches(article.getCoverPath(), fileName, relativePath)) {
                 return true;
             }
-            String markdown = safeReadMarkdown(article.getContentPath());
+            String markdown = safeReadMarkdown(article);
             if (markdownReferences(markdown, fileName, publicUrl)) {
                 return true;
             }
@@ -316,9 +317,27 @@ public class ManagedUploadCleanupService {
         return false;
     }
 
-    private String safeReadMarkdown(String contentPath) {
+    private String safeReadMarkdown(Article article) {
         try {
-            return fileStorageService.readMarkdown(contentPath);
+            String content = fileStorageService.readMarkdown(article.getContentPath());
+            if (StringUtils.hasText(content)) {
+                return content;
+            }
+            ArticleType type = ArticleType.fromValue(article.getArticleType());
+            String canonical = type.canonicalContentPath(article.getSlug());
+            if (!canonical.equals(article.getContentPath())) {
+                content = fileStorageService.readMarkdown(canonical);
+                if (StringUtils.hasText(content)) {
+                    return content;
+                }
+            }
+            if (type == ArticleType.DOC) {
+                String legacyBlog = ArticleType.BLOG.canonicalContentPath(article.getSlug());
+                if (!legacyBlog.equals(article.getContentPath())) {
+                    return fileStorageService.readMarkdown(legacyBlog);
+                }
+            }
+            return "";
         } catch (RuntimeException ex) {
             return "";
         }
